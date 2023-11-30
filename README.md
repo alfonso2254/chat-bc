@@ -8,15 +8,15 @@ El paquete `ChatBc` provee una interfaz para interactuar con un servicio de chat
 Para instalar el paquete, utiliza el siguiente comando en tu proyecto Node.js:
 
 ```bash
-npm install chatbc
+npm i chat-bc
 ```
 
 ## Uso Básico
 
-Primero, importa el paquete y crea una instancia de `ChatBc`:
+Primero, importa el paquete y crea una instancia de `chat-bc`:
 
 ```javascript
-const ChatBc = require('chatbc');
+const ChatBc = require('chat-bc');
 
 const chatClient = new ChatBc({
   url: 'https://tuapi.com',
