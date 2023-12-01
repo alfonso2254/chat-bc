@@ -47,7 +47,7 @@ class ChatBc {
                 method: "post",
                 data: {
                     message,
-                    tokenClient: this.tokenClient,
+                    userId: this.user._id,
                     channelId: channelId,
                     customerId: customerId,
                 }

@@ -38,8 +38,9 @@ const chatClient = new ChatBc({
   - `username`: Nombre de usuario.
   - `channel`: Nombre del canal.
   
-- `async sendMessages({ message })`: Envía un mensaje a un canal.
-  - `message`: Mensaje a enviar.
+- `async sendMessages({ message, channel })`: Envía un mensaje a un canal.
+    - `message`: Mensaje a enviar.
+    - `channel`: Nombre del canal.
 
 - `onMessages(channel, callback)`: Escucha en tiempo real los mensajes de un canal.
   - `channel`: Nombre del canal.
@@ -62,7 +63,7 @@ chatClient.getMessagesByChannel({ username: 'usuario', channel: 'general' })
   .catch(err => console.error(err));
 
 // Enviar un mensaje
-chatClient.sendMessages({ message: 'Hola Mundo' })
+chatClient.sendMessages({ message: 'Hola Mundo', channel: 'general' })
   .then(data => console.log(data))
   .catch(err => console.error(err));
 
