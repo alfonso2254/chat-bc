@@ -38,7 +38,6 @@ class ChatBc {
 
 
     async sendMessages({ message }) {
-      payload 
         const channelId = this.channelsData.find(item => item.channel === channel)._id || null;
         const customerId = this.customer._id || null;
         try {
@@ -53,14 +52,17 @@ class ChatBc {
                 }
             });
             return data;
-        }
-        catch (error) {
+        }catch (error) {
             return error;
         }
     }
 
     onMessages(channel, callback) {
-        const socket = io(this.url);
+        const socket = io(this.url, 
+            {
+                transports: ['websocket']
+            }
+        );
 
         socket.on('connect', () => {
             console.log('Conectado');
