@@ -37,8 +37,9 @@ class ChatBc {
     }
 
 
-    async sendMessages({ message }) {
-        const channelId = this.channelsData.find(item => item.channel === channel)._id || null;
+    async sendMessages({ message, channel }) {
+        console.log({ message, channel }, 'sendMessages');
+        const channelId = this.channelsData.find(item => item.channel === channel)?._id || null;
         const customerId = this.customer._id || null;
         try {
             const { data } = await axios({
