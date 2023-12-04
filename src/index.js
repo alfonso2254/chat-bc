@@ -42,40 +42,39 @@ class ChatBc {
   }
 
   async sendMessages({ message, channel }) {
-    console.log({ message, channel }, "sendMessages");
     const channelId =
       this.channelsData.find((item) => item.channel === channel)?._id || null;
     const customerId = this.customer._id || null;
     try {
-      const { data } = await axios({
-        url: `${this.url}/api/send-messages`,
-        method: "post",
-        data: {
-          message,
-          userId: this.user._id,
-          channelId: channelId,
-          customerId: customerId,
-        },
-        headers: {
-          socketId: this.socketConnection.socket.id,
-        },
-      });
+      const payload = {
+        message,
+        userId: this.user._id,
+        channelId,
+        customerId,
+      };
+      this.socket.emit(`send_message`, payload);
 
-      this.socketConnection.socket.broadcast.emit(`channel_message_${channelId}`, data);
-      return data;
+      return {
+        _id: Math.random().toString(36).substr(2, 9),
+        message,
+        user: this.user,
+        channel: channelId,
+        customer: customerId,
+        createdAt: new Date().toISOString(),
+      };
     } catch (error) {
       return error;
     }
   }
 
   onMessages(channel, callback) {
-    const channelId = this.channelsData.find(item => item.channel === channel)?._id || null;
+    const channelId =
+      this.channelsData.find((item) => item.channel === channel)?._id || null;
     if (!channelId) {
       console.error("ID de canal no encontrado");
       return;
     }
 
-    console.log("Conectado al canal:", `channel_message_${channelId}`);
     this.socket.on(`channel_message_${channelId}`, callback);
   }
 
