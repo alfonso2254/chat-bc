@@ -1,6 +1,10 @@
 const axios = require("axios");
 const { io } = require('socket.io-client');
 
+
+
+
+
 class ChatBc {
     constructor({ url, tokenClient}) {
         this.url = url;
@@ -9,6 +13,20 @@ class ChatBc {
         this.customer = {};    
         this.user = {};    
         this.channelsData = [];
+        
+
+        this.socketId = null;
+        this.socket = io(url,
+            {
+                transports: ['websocket']
+            }
+        );
+
+        socket.on('connect', (socket) => {
+            console.log('Conectado', socket.id);
+            
+            this.socketId = socket.id;
+        });
     }
 
     async getMessagesByChannel({username , channel}) {
@@ -50,6 +68,10 @@ class ChatBc {
                     userId: this.user._id,
                     channelId: channelId,
                     customerId: customerId,
+                },
+                headers: {
+                    // socketId: socket.id,
+                    socketId: '123',
                 }
             });
             return data;
@@ -59,27 +81,17 @@ class ChatBc {
     }
 
     onMessages(channel, callback) {
-        const socket = io(this.url, 
-            {
-                transports: ['websocket']
-            }
-        );
-
-        socket.on('connect', () => {
+        this.socket.on('connect', () => {
             console.log('Conectado');
         });
 
-        const channelId = this.channelsData.find(item => item.channel === channel)._id || null;
+        const channelId = this.channelsData.find(item => item.channel === channel)?._id || null;
         console.log('Conectado al canal:', `channel_message_${channelId}`);
-        socket.on(`channel_message_${channelId}`, (data) => {
+        this.socket.on(`channel_message_${channelId}`, (data) => {
             callback(data);
         });
 
-        socket.on('disconnect', () => {
-            console.log('Desconectado');
-        });
-
-        socket.on('error', (error) => {
+        this.socket.on('error', (error) => {
             console.error(error);
         });
     }
