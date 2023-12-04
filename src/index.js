@@ -22,7 +22,7 @@ class ChatBc {
             }
         );
 
-        socket.on('connect', (socket) => {
+        this.socket.on('connect', (socket) => {
             console.log('Conectado', socket.id);
             
             this.socketId = socket.id;
