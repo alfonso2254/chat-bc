@@ -60,6 +60,8 @@ class ChatBc {
           socketId: this.socketConnection.socket.id,
         },
       });
+
+      this.socketConnection.socket.broadcast.emit(`channel_message_${channelId}`, data);
       return data;
     } catch (error) {
       return error;
