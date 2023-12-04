@@ -1,5 +1,5 @@
 const axios = require("axios");
-const { io } = require("socket.io-client");
+const SocketConnection = require("./config/socketConnection");
 
 class ChatBc {
   constructor({ url, tokenClient }) {
@@ -10,16 +10,8 @@ class ChatBc {
     this.user = {};
     this.channelsData = [];
 
-    this.socketId = null;
-    this.socket = io(url, {
-      transports: ["websocket"],
-    });
-
-    this.socket.on("connect", (socket) => {
-      console.log("Conectado", socket.id);
-
-      this.socketId = socket.id;
-    });
+    this.socketConnection = new SocketConnection(url);
+    this.socket = this.socketConnection.socket;
   }
 
   async getMessagesByChannel({ username, channel }) {
@@ -76,20 +68,14 @@ class ChatBc {
   }
 
   onMessages(channel, callback) {
-    this.socket.on("connect", () => {
-      console.log("Conectado");
-    });
+    const channelId = this.channelsData.find(item => item.channel === channel)?._id || null;
+    if (!channelId) {
+      console.error("ID de canal no encontrado");
+      return;
+    }
 
-    const channelId =
-      this.channelsData.find((item) => item.channel === channel)?._id || null;
     console.log("Conectado al canal:", `channel_message_${channelId}`);
-    this.socket.on(`channel_message_${channelId}`, (data) => {
-      callback(data);
-    });
-
-    this.socket.on("error", (error) => {
-      console.error(error);
-    });
+    this.socket.on(`channel_message_${channelId}`, callback);
   }
 
   getDataConversation() {
