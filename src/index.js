@@ -57,8 +57,7 @@ class ChatBc {
           customerId: customerId,
         },
         headers: {
-          // socketId: socket.id,
-          socketId: "123",
+          socketId: this.socketConnection.socket.id,
         },
       });
       return data;
